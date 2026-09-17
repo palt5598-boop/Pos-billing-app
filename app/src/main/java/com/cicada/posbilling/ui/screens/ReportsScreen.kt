@@ -90,7 +90,7 @@ fun ReportsScreen(viewModel: PosViewModel) {
                         fontFamily = FontFamily.Monospace
                     )
                 }
-                Divider()
+                HorizontalDivider()
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("UPI (${upiOrders.size} bills)")
                     Text(
@@ -99,7 +99,7 @@ fun ReportsScreen(viewModel: PosViewModel) {
                         fontFamily = FontFamily.Monospace
                     )
                 }
-                Divider()
+                HorizontalDivider()
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("Card (${cardOrders.size} bills)")
                     Text(

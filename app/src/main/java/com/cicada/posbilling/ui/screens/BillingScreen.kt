@@ -138,7 +138,7 @@ fun BillingScreen(
                                             Icon(Icons.Default.AddCircle, contentDescription = "Add", tint = Emerald600)
                                         }
                                     }
-                                    Divider()
+                                    HorizontalDivider()
                                 }
                             }
                         } else {
@@ -184,7 +184,7 @@ fun BillingScreen(
                         }
                     }
 
-                    Divider(modifier = Modifier.padding(vertical = 8.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
                     if (cart.isEmpty()) {
                         Box(
@@ -241,7 +241,7 @@ fun BillingScreen(
                                         fontSize = 13.sp
                                     )
                                 }
-                                Divider(color = Color(0xFFF0F0F0))
+                                HorizontalDivider(color = Color(0xFFF0F0F0))
                             }
                         }
 
@@ -304,18 +304,21 @@ fun BillingScreen(
         }
     }
 
-    // Camera Barcode Scanner
+    // Camera Barcode Scanner (Continuous Scanning Mode)
     if (isScannerOpen) {
         BarcodeScannerDialog(
             onBarcodeScanned = { code ->
-                isScannerOpen = false
                 viewModel.onBarcodeScanned(
                     code = code,
                     onFound = {},
                     onNotFound = { unknownBarcode = it }
                 )
             },
-            onDismiss = { isScannerOpen = false }
+            onDismiss = { isScannerOpen = false },
+            cartItemCount = cart.sumOf { it.qty },
+            cartTotal = cartTotal,
+            currencySymbol = settings.currencySymbol,
+            isPaused = unknownBarcode != null
         )
     }
 
@@ -345,7 +348,16 @@ fun BillingScreen(
                         val cPrice = costPrice.toDoubleOrNull() ?: (sPrice * 0.8)
                         val qty = stock.toIntOrNull() ?: 10
                         if (name.isNotBlank() && sPrice > 0) {
+                            val newProduct = ProductEntity(
+                                id = java.util.UUID.randomUUID().toString(),
+                                name = name,
+                                barcode = code,
+                                sellingPrice = sPrice,
+                                costPrice = cPrice,
+                                stock = qty
+                            )
                             viewModel.addProduct(name, code, sPrice, cPrice, qty)
+                            viewModel.addToCart(newProduct, 1)
                             unknownBarcode = null
                         }
                     },
@@ -418,13 +430,13 @@ fun BillingScreen(
                 ) {
                     Text(settings.shopName, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                     Text(settings.shopPhone, fontSize = 11.sp, color = Color.Gray)
-                    Divider(modifier = Modifier.padding(vertical = 6.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp))
                     Text("Bill: ${bill.billNumber}", fontFamily = FontFamily.Monospace, fontSize = 12.sp)
                     Text("Customer: ${bill.customerName}", fontSize = 12.sp)
                     Text("Date: $dateStr", fontSize = 11.sp, color = Color.Gray)
-                    Divider(modifier = Modifier.padding(vertical = 6.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp))
                     Text("Items: ${bill.itemsSummary}", fontSize = 12.sp)
-                    Divider(modifier = Modifier.padding(vertical = 6.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Payment:", fontWeight = FontWeight.Bold, fontSize = 13.sp)
                         Text(bill.paymentMode, fontSize = 13.sp)

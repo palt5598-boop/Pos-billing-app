@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BillsScreen(viewModel: PosViewModel) {
     val bills by viewModel.bills.collectAsState()
@@ -125,9 +126,9 @@ fun BillsScreen(viewModel: PosViewModel) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text("Customer: ${bill.customerName}")
                     Text("Date: $dateStr", fontSize = 12.sp, color = Color.Gray)
-                    Divider(modifier = Modifier.padding(vertical = 4.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                     Text("Items: ${bill.itemsSummary}", fontSize = 12.sp)
-                    Divider(modifier = Modifier.padding(vertical = 4.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                     Text("Payment Mode: ${bill.paymentMode}")
                     Text("Total: ${settings.currencySymbol}${bill.totalAmount}", fontWeight = FontWeight.Bold, color = Emerald600)
                 }
